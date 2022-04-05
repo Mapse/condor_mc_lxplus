@@ -7,6 +7,10 @@ Then, the merged content is moved to the folder on the conda work area and the d
 
 name=Monte_Carlo_2017_new_cuts
 
+rm -rf outputs/
+
+mkdir outputs/
+
 mv *.coffea output/
 
 echo 'merging data files.. (For MC 2017 this takes around 8 minutes)'
