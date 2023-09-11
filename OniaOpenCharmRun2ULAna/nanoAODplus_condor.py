@@ -17,8 +17,15 @@ number = job.split('.')[-2].split('_')[-1]
 
 with open(job) as f:
     file_list = f.read().splitlines()
+#print('file list:')
+print(f'file list: {file_list[0]}')
 
-name = file_list[0].split('/')[-1].split('_')[0]
+#name = file_list[0].split('/')[-1].split('_')[0] # before
+
+# Takes the output file name 
+name =  file_list[0].split('/')[-1].split('_')[0] +  file_list[0].split('/')[-1].split('_')[1] +  file_list[0].split('/')[-1].split('_')[2]
+
+print(name)
 name = name + '_' + number
 
 files = {name: file_list}
@@ -42,7 +49,7 @@ print(f"Process finished in: {elapsed} s")
 
 merger(name)
 
-plotter(name)
+#plotter(name)
 
 print("Transfering files...")
 os.system("cp output/" + name + "/* ../.")

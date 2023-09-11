@@ -461,11 +461,11 @@ class HistogramingProcessor(processor.ProcessorABC):
         #print(len(DimuDstar_acc['nDimuDstar'].value))
 
         # Trigger cut
-        hlt = False
+        hlt = True
         #hlt_filter = ['HLT_Dimuon0_Jpsi', 'HLT_Dimuon20_Jpsi_Barrel_Seagulls', 'HLT_Dimuon25_Jpsi'] #2017
-        #hlt_filter = ['HLT_Dimuon20_Jpsi_Barrel_Seagulls']
+        hlt_filter = ['HLT_Dimuon25_Jpsi']
         #hlt_filter = ['HLT_Dimuon20_Jpsi_Barrel_Seagulls', 'HLT_Dimuon25_Jpsi', 'HLT_DoubleMu4_3_Jpsi']  #2018
-        HLT_acc = HLT_2018_acc
+        HLT_acc = HLT_2017_acc
 
         if hlt:
             print(f"You are running with the trigger(s): {hlt_filter}")
@@ -473,20 +473,6 @@ class HistogramingProcessor(processor.ProcessorABC):
             trigger_cut = HLT_acc[hlt_filter[0]].value
             for i in range(0, len(hlt_filter)):
                 trigger_cut |= HLT_acc[hlt_filter[i]].value
-
-            # Gen Jpsi collection
-            Gen_jpsi = Gen_jpsi[trigger_cut]
-            
-            gen_jpsi_pt = ak.flatten(Gen_jpsi.pt)
-            gen_jpsi_eta = ak.flatten(Gen_jpsi.eta)
-            gen_jpsi_phi = ak.flatten(Gen_jpsi.phi)
-
-            # Gen JpsDstar collection
-            Gen_dstar = Gen_dstar[trigger_cut]
-           
-            gen_dstar_pt = ak.flatten(Gen_dstar.pt)
-            gen_dstar_eta = ak.flatten(Gen_dstar.eta)
-            gen_dstar_phi = ak.flatten(Gen_dstar.phi)
 
             # Apply trigger to pileup corrections
             corrections = corrections[trigger_cut]
@@ -622,16 +608,6 @@ class HistogramingProcessor(processor.ProcessorABC):
             print("You are not running with trigger")
             trigger_cut = np.ones(len(Dimu), dtype=bool)
 
-            # Gen Jpsi collection            
-            gen_jpsi_pt = Gen_Jpsi_acc['pt'].value
-            gen_jpsi_eta = Gen_Jpsi_acc['eta'].value
-            gen_jpsi_phi = Gen_Jpsi_acc['phi'].value
-
-            # Gen Dstar collection           
-            gen_dstar_pt = Gen_Dstar_acc['pt'].value
-            gen_dstar_eta = Gen_Dstar_acc['eta'].value
-            gen_dstar_phi = Gen_Dstar_acc['phi'].value
-
             # Pileup corrections for muon lead
             correcto_muon_lead = np.repeat(corrections, ak.num(Muon_lead))
             
@@ -750,16 +726,6 @@ class HistogramingProcessor(processor.ProcessorABC):
 
         # Primary vertex
         output['nPVtx'].fill(nPVtx=Primary_vertex_acc['nPVtx'].value)
-
-        # Gen Jpsi
-        output['GenJpsi_p'].fill(pt=gen_jpsi_pt,
-                                 eta=gen_jpsi_eta,
-                                 phi=gen_jpsi_phi)
-        
-        # Gen Dstar
-        output['GenDstar_p'].fill(pt=gen_dstar_pt,
-                                 eta=gen_dstar_eta,
-                                 phi=gen_dstar_phi)
         
         #Muon
         output['Muon_lead_p'].fill(pt=muon_lead_pt,

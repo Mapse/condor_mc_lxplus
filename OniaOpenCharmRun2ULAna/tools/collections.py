@@ -24,7 +24,8 @@ dstar_cols = ['Dstar_pt', 'Dstar_eta', 'Dstar_phi', 'Dstar_rap', 'Dstar_deltam',
               'Dstar_pipt', 'Dstar_pieta', 'Dstar_piphi', 'Dstar_pivtxIdx', 'Dstar_pichindof', 'Dstar_pinValid', 'Dstar_pinPix',
               'Dstar_pidxy', 'Dstar_pidz', 'Dstar_pichg',
               'Dstar_pispt', 'Dstar_piseta', 'Dstar_pisphi', 'Dstar_pisvtxIdx', 'Dstar_pischindof', 'Dstar_pisnValid', 'Dstar_pisnPix',
-              'Dstar_pisdxy', 'Dstar_pisdz', 'Dstar_simIdx']
+              'Dstar_pisdxy', 'Dstar_pisdz', 'Dstar_simIdx',
+              'Dstar_associationIdx', 'Dstar_associationProb', 'Dstar_associationchi2',]
 
 # Total number of reconstructed primary vertices
 primary_vertex_cols = ['PV_chi2', 'PV_ndof', 'PV_npvs', 'PV_npvsGood', 'PV_score', 'PV_x', 'PV_y', 'PV_z']
@@ -38,8 +39,8 @@ gen_part_cols = ['GenPart_eta', 'GenPart_genPartIdxMother', 'GenPart_mass', 'Gen
                  'GenPart_vy', 'GenPart_vz', 'GenPart_mvx', 'GenPart_mvy', 'GenPart_mvz', 'GenPart_recIdx']
 
 hlt_cols_charm_2017 = ['HLT_Dimuon0_Jpsi', 'HLT_Dimuon20_Jpsi_Barrel_Seagulls' , 'HLT_Dimuon25_Jpsi']
-
-hlt_cols_charm_2018 = ['HLT_Dimuon20_Jpsi_Barrel_Seagulls', 'HLT_Dimuon25_Jpsi', 'HLT_DoubleMu4_3_Jpsi']
+hlt_cols_charm_2016 = ['HLT_Dimuon16_Jpsi']
+hlt_cols_charm_2018 = ['HLT_Dimuon25_Jpsi']
 
 # This function is called to keep the cols in a good way to be read on the EventSelectProcessor.py
 def get_vars_dict(events, col_list):
