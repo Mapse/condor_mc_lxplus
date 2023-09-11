@@ -26,6 +26,8 @@ python -m pip install --upgrade --ignore-installed --force-reinstall coffea
 
 ls
 
+conda install -c conda-forge xrootd
+
 echo "Done"
 echo "---------------Starting the processing---------------"
 

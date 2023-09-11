@@ -34,53 +34,70 @@ def job_divider(name, n_files=20):
 
 
 def submit(name):
-    os.system("rm -rf jobs_"+ name +".jdl")
-    os.system("mkdir -p " + name + "_logs")
-    os.system("mkdir -p " + name + "_output")
-    os.system("mkdir -p " + name + "_config")
-    os.system("rm -rf " + name + "_logs/*")
-    os.system("rm -rf " + name + "_config/*")
-    os.system("cp submit.sh " + name + "_config/" + name + "_submit.sh")
 
-    user = getpass.getuser()
+    import sys
 
-    with open("jobs_template.jdl", 'r') as f:
-        new_file = f.read().replace("GROUP_USER", user)
-        new_file = new_file.replace("EXEC", name + "_config/" + name + "_submit.sh")
-        new_file = new_file.replace("FILE_LIST", name + "_config/" + name + "_list.txt")
-        new_file = new_file.replace("LOGS", name + "_logs")
-        new_file = new_file.replace("BATCH_NAME", name)
-        new_file = new_file.replace("INPUT_FILES", name + "_jobs,OniaOpenCharmRun2ULAna,Miniconda3-latest-Linux-x86_64.sh")
+    sys.path.insert(1, '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/OniaOpenCharmRun2ULAna/config')
 
-    with open(name + "_config/" + name  + "_jobs.jdl", 'w') as nf:
-        nf.write(new_file)
-    
-    os.system("wget --output-document=Miniconda3-latest-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh")
-    #os.system("tar --exclude='OniaOpenCharmRun2ULAna/.git' -zcf WORKDIR.tar.gz " + name + "_jobs/* OniaOpenCharmRun2ULAna/ Miniconda3-latest-Linux-x86_64.sh")
-    os.system("mv " + name + "_list.txt " + name + "_config/.")
-    out = subprocess.check_output("condor_submit " + name + "_config/" + name + "_jobs.jdl", shell=True).decode("utf-8").splitlines()[1]
+    import config_files as config 
 
-    out_split = out.split()
-    if out_split[0].isnumeric():
-        n_jobs = int(out_split[0])
+    # Takes year from config to simulate the correct sample.
+    year = config.year
+    comp = '20UL' + year[2:4]
+
+    if comp in name:
+
+        print(f'Running data from {year}')
+
+        os.system("rm -rf jobs_"+ name +".jdl")
+        os.system("mkdir -p " + name + "_logs")
+        os.system("mkdir -p " + name + "_output")
+        os.system("mkdir -p " + name + "_config")
+        os.system("rm -rf " + name + "_logs/*")
+        os.system("rm -rf " + name + "_config/*")
+        os.system("cp submit.sh " + name + "_config/" + name + "_submit.sh")
+
+        user = getpass.getuser()
+
+        with open("jobs_template.jdl", 'r') as f:
+            new_file = f.read().replace("GROUP_USER", user)
+            new_file = new_file.replace("EXEC", name + "_config/" + name + "_submit.sh")
+            new_file = new_file.replace("FILE_LIST", name + "_config/" + name + "_list.txt")
+            new_file = new_file.replace("LOGS", name + "_logs")
+            new_file = new_file.replace("BATCH_NAME", name)
+            new_file = new_file.replace("INPUT_FILES", name + "_jobs,OniaOpenCharmRun2ULAna,Miniconda3-latest-Linux-x86_64.sh")
+
+        with open(name + "_config/" + name  + "_jobs.jdl", 'w') as nf:
+            nf.write(new_file)
+        
+        os.system("wget --output-document=Miniconda3-latest-Linux-x86_64.sh https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh")
+        #os.system("tar --exclude='OniaOpenCharmRun2ULAna/.git' -zcf WORKDIR.tar.gz " + name + "_jobs/* OniaOpenCharmRun2ULAna/ Miniconda3-latest-Linux-x86_64.sh")
+        os.system("mv " + name + "_list.txt " + name + "_config/.")
+        out = subprocess.check_output("condor_submit " + name + "_config/" + name + "_jobs.jdl", shell=True).decode("utf-8").splitlines()[1]
+
+        out_split = out.split()
+        if out_split[0].isnumeric():
+            n_jobs = int(out_split[0])
+        else:
+            raise("Problem in job submition: " + out)
+
+        if out_split[-1][0:-1].isnumeric():
+            cluster_id = out_split[-1][0:-1]
+        else:
+            raise("Problem in job submition: " + out)
+
+        config = {
+                'name': name,
+                'n_jobs': n_jobs,
+                'cluster_id': cluster_id
+                }
+
+        print(out)
+        with open(name + "_config/config.json", 'w') as outfile:
+            json.dump(config, outfile)
+
     else:
-        raise("Problem in job submition: " + out)
-
-    if out_split[-1][0:-1].isnumeric():
-        cluster_id = out_split[-1][0:-1]
-    else:
-        raise("Problem in job submition: " + out)
-
-    config = {
-            'name': name,
-            'n_jobs': n_jobs,
-            'cluster_id': cluster_id
-            }
-
-    print(out)
-    with open(name + "_config/config.json", 'w') as outfile:
-        json.dump(config, outfile)
-
+        print(f'You are running files from {year} in another dataset!!. \nEither go to config_files.py to change the correct year or run the correct year!')
 
 def check(name):
     with open(name + "_config/config.json") as config_file:

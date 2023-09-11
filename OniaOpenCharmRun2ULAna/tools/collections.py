@@ -38,8 +38,8 @@ gen_part_cols = ['GenPart_eta', 'GenPart_genPartIdxMother', 'GenPart_mass', 'Gen
                  'GenPart_Id', 'GenPart_parpdgId', 'GenPart_sparpdgId', 'GenPart_numberOfDaughters', 'GenPart_nstchgdaug', 'GenPart_vx', 
                  'GenPart_vy', 'GenPart_vz', 'GenPart_mvx', 'GenPart_mvy', 'GenPart_mvz', 'GenPart_recIdx']
 
-hlt_cols_charm_2017 = ['HLT_Dimuon0_Jpsi', 'HLT_Dimuon20_Jpsi_Barrel_Seagulls' , 'HLT_Dimuon25_Jpsi']
 hlt_cols_charm_2016 = ['HLT_Dimuon16_Jpsi']
+hlt_cols_charm_2017 = ['HLT_Dimuon25_Jpsi']
 hlt_cols_charm_2018 = ['HLT_Dimuon25_Jpsi']
 
 # This function is called to keep the cols in a good way to be read on the EventSelectProcessor.py

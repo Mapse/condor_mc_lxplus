@@ -13,30 +13,18 @@ from tools.collections import *
 
 from coffea.lookup_tools import extractor
 
+import sys
+
+sys.path.insert(1, '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/OniaOpenCharmRun2ULAna/config')
+
+import config_files as config 
+
 D0_PDG_MASS = 1.864
-
-# 2016-pre
-""" pileup_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies_new/OniaOpenCharmRun2ULAna/data/corrections/pile_up_reweight_2016APV.root'
-reco_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_generalTracks_Run2016preVFP_UL_trackerMuon.json'
-id_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_trackerMuon_Run2016preVFP_UL_ID.json'
- """
-# 2016-pos
-""" pileup_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies_new/OniaOpenCharmRun2ULAna/data/corrections/pile_up_reweight_2016.root'
-reco_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_generalTracks_Run2016postVFP_UL_trackerMuon.json'
-id_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_trackerMuon_Run2016postVFP_UL_ID.json'
- """
-# 2017
  
-pileup_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies_new/OniaOpenCharmRun2ULAna/data/corrections/pile_up_reweight_2017.root'
-reco_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_generalTracks_Run2017_UL_trackerMuon.json'
-id_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_trackerMuon_Run2017_UL_ID.json'
+pileup_file = config.pileup_file
+reco_file = config.reco_file
+id_file = config.id_file
 
-
-# 2018
-""" pileup_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies_new/OniaOpenCharmRun2ULAna/data/corrections/pile_up_reweight_2018.root'
-reco_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_generalTracks_Run2018_UL_trackerMuon.json'
-id_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies/scale_factor_muon_pog/Efficiency_muon_trackerMuon_Run2018_UL_ID.json'
-  """
 def get_weight(evaluator, Muon, Dimu, PVtx):
     pileup_weight = evaluator['weight_histogram'](ak.num(PVtx))[ak.num(Dimu)>0]
     muon = Muon[ak.num(Dimu)>0]
@@ -178,11 +166,14 @@ class EventSelectorProcessor(processor.ProcessorABC):
                         'charge': events.Dstar_pischg,
                         **get_vars_dict(events, dstar_cols)}, 
                         with_name="PtEtaPhiMCandidate")
+       
         # Triggers for charmonium
-        
-        #hlt_char_2016 = ak.zip({**get_vars_dict(events, hlt_cols_charm_2016)})
-        #hlt_char_2017 = ak.zip({**get_vars_dict(events, hlt_cols_charm_2017)})
-        hlt_char_2018 = ak.zip({**get_vars_dict(events, hlt_cols_charm_2018)})
+        if config.year == '2016preVFP' or config.year == '2016postVFP':
+            hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2016)})
+        elif config.year == '2017':
+            hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2017)})
+        elif config.year == '2018':
+            hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2018)})        
 
         ##### Vertices cut
         #good_pvtx = Primary_vertex['isGood']
@@ -193,13 +184,13 @@ class EventSelectorProcessor(processor.ProcessorABC):
         # Activate trigger
         hlt = True
         # HLT to be used
-        hlt_filter = 'HLT_Dimuon25_Jpsi'
+        hlt_filter = config.hlt_filter
 
         # Trigger choice
         if hlt:
             print(f"You are running with the trigger: {hlt_filter}")
-            trigger_cut = hlt_char_2018[hlt_filter]
-            hlt_char_2018 = hlt_char_2018[hlt_filter]
+            trigger_cut = hlt_char[hlt_filter]
+            hlt_char = hlt_char[hlt_filter]
         if not hlt:
             print("You are not running with trigger")
             # Assign 1 to all events.
@@ -362,23 +353,11 @@ class EventSelectorProcessor(processor.ProcessorABC):
 
         ## Trigger accumulator
 
-        # 2016 triggers
-        """ trigger_2016_acc = processor.dict_accumulator({})
-        for var in hlt_char_2016.fields:
-            trigger_2016_acc[var] = processor.column_accumulator(ak.to_numpy(hlt_char_2016[var]))
-        output["HLT_2016"] = trigger_2016_acc """  
-
-        # 2017 triggers
-        """ trigger_2017_acc = processor.dict_accumulator({})
-        for var in hlt_char_2017.fields:
-            trigger_2017_acc[var] = processor.column_accumulator(ak.to_numpy(hlt_char_2017[var]))
-        output["HLT_2017"] = trigger_2017_acc  """  
-
-        # 2018 triggers
-        trigger_2018_acc = processor.dict_accumulator({})
-        for var in hlt_char_2018.fields:
-            trigger_2018_acc[var] = processor.column_accumulator(ak.to_numpy(hlt_char_2018[var]))
-        output["HLT_2018"] = trigger_2018_acc        
+        # Triggers
+        trigger_acc = processor.dict_accumulator({})
+        for var in hlt_char.fields:
+            trigger_acc[var] = processor.column_accumulator(ak.to_numpy(hlt_char[var]))
+        output["HLT"] = trigger_acc        
 
         # Accumulator for the associated candidates
         DimuDstar_acc = processor.dict_accumulator({})
@@ -433,10 +412,10 @@ class EventSelectorProcessor(processor.ProcessorABC):
                         'jpsi_pt' : DimuDstar_acc['Dimu']['pt'].value,
                         'mass' : DimuDstar_p4.mass,
                         'pt' : DimuDstar_p4.pt,       
-                        'deltarap' : DimuDstar_acc['deltarap'].value,
+                        'deltarap' : abs(DimuDstar_acc['deltarap'].value),
                         'deltapt'  : DimuDstar_acc['deltapt'].value,  
                         'deltaeta' : DimuDstar_acc['deltaeta'].value, 
-                        'deltaphi' : DimuDstar_acc['deltaphi'].value,}, with_name='PtEtaPhiMCandidate')
+                        'deltaphi' : abs(DimuDstar_acc['deltaphi'].value),}, with_name='PtEtaPhiMCandidate')
         # Unflatten it to take the first element
         DimuDstar_vars = ak.unflatten(DimuDstar_vars, DimuDstar_acc['nDimuDstar'].value)
 
