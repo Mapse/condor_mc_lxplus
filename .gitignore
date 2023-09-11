@@ -1,5 +1,12 @@
+x509up*
 *.pyc
 *.txt
 *.root
 *.coffea
 *.old_paths/
+modified:   x509up_u128055
+DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO_config/
+DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO_logs/
+Miniconda3-latest-Linux-x86_64.sh
+OniaOpenCharmRun2ULAna/nanoAODplus_processor/.ipynb_checkpoints/
+
