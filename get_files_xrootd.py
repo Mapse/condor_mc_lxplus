@@ -16,7 +16,7 @@ def generate_path(mc, dataset,  crab_folder, n_folders):
     cmds = [ 
     f'xrdfs xrootd-redir.ultralight.org ls -u /store/group/uerj/mabarros/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
     ]
-    #print(cmds)
+    print(cmds)
 
     cat = ""
     out_file = dataset + "_path.txt"
@@ -42,8 +42,24 @@ def generate_path(mc, dataset,  crab_folder, n_folders):
     with open(out_file, 'w') as f:
         for i in final_list:
             f.write(i)
+            #print(i)
 
 if __name__ == '__main__':
+    
+
+    ## Private SPS-VFNS 
+    # 2017
+    '''mc = ['CRAB_PrivateMC_RunII_UL_SPS_2017',
+          'CRAB_PrivateMC_RunII_UL_SPS_2017',
+          'CRAB_PrivateMC_RunII_UL_SPS_2017',]
+    
+    dataset = ['jpsi_ccbar_9to30_VFNS_SPS_2017_13TeV',
+               'jpsi_ccbar_30to50_VFNS_SPS_2017_13TeV_path',
+               'jpsi_ccbar_50to100_VFNS_SPS_2017_13TeV_path',]
+    
+    crab_folder = ['230822_214052', '231012_042325', '231012_042456',]
+    
+    n_folders = [1, 1, 1,]'''
 
     # 2016-pre-SPS
     """ mc = ['SPS_D0ToKPi_JPsiPt-9To30_TuneCP5_13TeV-helaconia-pythia8-evtgen',
@@ -59,7 +75,7 @@ if __name__ == '__main__':
     n_folders = [1, 1, 1,]  """
     
     # 2016-pre-DPS
-    mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+    """mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
           'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
           'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',]
     
@@ -69,7 +85,7 @@ if __name__ == '__main__':
     
     crab_folder = ['221021_225931', '220823_051146', '220823_051151',]
     
-    n_folders = [1, 1, 1,]
+    n_folders = [1, 1, 1,]"""
 
     # 2016-pos-DPS
     """ mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
@@ -97,8 +113,8 @@ if __name__ == '__main__':
     
     n_folders = [1, 1, 1,] """
 
-    # 2017
-    '''mc = ['SPS_D0ToKPi_JPsiPt-9To30_TuneCP5_13TeV-helaconia-pythia8-evtgen/',
+    # 2017-SPS
+    """ mc = ['SPS_D0ToKPi_JPsiPt-9To30_TuneCP5_13TeV-helaconia-pythia8-evtgen/',
           'SPS_D0ToKPi_JPsiPt-30To50_TuneCP5_13TeV-helaconia-pythia8-evtgen',
           'SPS_D0ToKPi_JPsiPt-50To100_TuneCP5_13TeV-helaconia-pythia8-evtgen',]
     
@@ -107,19 +123,6 @@ if __name__ == '__main__':
                'SPS_D0ToKPi_JPsiPt-50To100_TuneCP5_13TeV-helaconia-pythia8-evtgenRunIISummer20UL17RECO',]
     
     crab_folder = ['230211_204256', '230211_204302', '230211_204309',]
-    
-    n_folders = [1, 1, 1,]'''
-
-    # 2018-DPS
-    """ mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
-          'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
-          'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',]
-    
-    dataset = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',
-               'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',
-               'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',]
-    
-    crab_folder = ['230516_020037', '230124_190421', '220823_052048',]
     
     n_folders = [1, 1, 1,] """
 
@@ -135,6 +138,34 @@ if __name__ == '__main__':
     crab_folder = ['230211_204657', '230214_124749', '230211_204713',]
     
     n_folders = [1, 1, 1,] """
+
+    # 2017-DPS
+    mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+          'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+          'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',]
+    
+    dataset = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
+               'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
+               'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',]
+    
+    crab_folder = ['230124_161004', '230124_161011', '220823_050416',]
+    
+    n_folders = [1, 1, 1,]
+
+    # 2018-DPS
+    """ mc = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+          'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+          'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',]
+    
+    dataset = ['DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',
+               'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',
+               'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO',]
+    
+    crab_folder = ['230516_020037', '230124_190421', '220823_052048',]
+    
+    n_folders = [1, 1, 1,] """
+
+    
     
     for m, d, c, n in zip(mc, dataset, crab_folder, n_folders):
         generate_path(m, d, c, n)      

@@ -12,10 +12,10 @@ max_retries = 5
 periodic_hold = (JobStatus == 2) && ((CurrentTime - EnteredCurrentStatus) > (60 * 60 * 2))
 periodic_release = (JobStatus == 5) && ((HoldReasonCode == 0) || ((HoldReasonCode == 3) && (NumJobStarts < 10)))
 
-x509userproxy = /afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/monte_carlo/x509up_u128055
+x509userproxy = /afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/x509up_u128055
 use_x509userproxy = true
 
-+JobFlavour = "microcentury"
++JobFlavour = "workday"
 +JobBatchName = "BATCH_NAME"
 
 

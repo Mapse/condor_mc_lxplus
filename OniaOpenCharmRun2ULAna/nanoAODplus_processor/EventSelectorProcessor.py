@@ -104,15 +104,13 @@ class EventSelectorProcessor(processor.ProcessorABC):
                 'Jpsi_dlSig': hist.Hist("Events", hist.Bin("dlSig", "dl Significance", 100, -50, 200)),
                 'JpsiDstar_deltarap': hist.Hist("Events", hist.Bin("deltarap", "$\Delta y$", 50, -5, 5)),
                 'JpsiDstar_deltaphi': hist.Hist("Events", hist.Bin("deltaphi", r"$|\phi_{J/\psi} - \phi_{D^*}|$ [rad]", 80, 0, 5)),
-                'JpsiDstar_deltapt': hist.Hist("Events", hist.Bin("deltapt", r"$|\p_{T, J/\psi} - \p_{T, D^*}|$ GeV/c", 100, 0, 120)),
-                'JpsiDstar_deltaeta': hist.Hist("Events", hist.Bin("deltaeta", r"$|\eta_{J/\psi} - \eta_{D^*}|$ [rad]", 80, -5, 5)),
                 'JpsiDstar_mass': hist.Hist("Events", hist.Bin("mass", "$m_{J/\psi D*}$ [$GeV/c^2$]", 50, 0, 120)),
-                'JpsiDstar_pt': hist.Hist("Events", hist.Bin("pt", "$p_{T, J/\psi D*}$ [$GeV/c$]", 50, 0, 150)),
+                'JpsiDstar_deltapt': hist.Hist("Events", hist.Bin("deltapt", r"$|\p_{T, J/\psi} - \phi_{T, D^*}|$ [GeV/c]", 50, 0, 150)),
                 'Dstar_p': hist.Hist("Events",
-                                 hist.Cat("chg", "charge"), 
-                                 hist.Bin("pt", "$p_{T,D*}$ [GeV/c]", 100, 0, 100),
-                                 hist.Bin("eta", "$\eta_{D*}$", 80, -2.5, 2.5),
-                                 hist.Bin("phi", "$\phi_{D*}$", 70, -3.5, 3.5)),
+                                hist.Cat("chg", "charge"), 
+                                hist.Bin("pt", "$p_{T,D*}$ [GeV/c]", 100, 0, 100),
+                                hist.Bin("eta", "$\eta_{D*}$", 80, -2.5, 2.5),
+                                hist.Bin("phi", "$\phi_{D*}$", 70, -3.5, 3.5)),
                 'Dstar_rap': hist.Hist("Events", 
                                     hist.Cat("chg", "charge"), 
                                     hist.Bin("rap", "y", 60, -2.5, 2.5)),
@@ -122,12 +120,46 @@ class EventSelectorProcessor(processor.ProcessorABC):
                 'Dstar_deltamr': hist.Hist("Events", 
                                         hist.Cat("chg", "charge"), 
                                         hist.Bin("deltamr", "$\Delta m_{refit}$ [$GeV/c^2$]", 50, 0.138, 0.162)),
+                'Dstar_D0pt': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("d0pt", "D$^0$ from D$^*$ - p$_{T}$ [GeV/c]", 80, 0, 80)),
+                'Dstar_D0cosphi': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("d0cosphi", "D$^0$ from D$^*$ - pointing angle", 120, 0.9, 1)),
                 'Dstar_D0dl': hist.Hist("Events", 
                                         hist.Cat("chg", "charge"), 
                                         hist.Bin("d0dl", "D$^0$ from D$^*$ - Decay length [mm]", 80, 0, 2)),
                 'Dstar_D0dlSig': hist.Hist("Events", 
                                         hist.Cat("chg", "charge"), 
                                         hist.Bin("d0dlsig", "D$^0$ from D$^*$ - Decay length significance", 120, 0, 50)),
+                'Dstar_D0dca': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("d0dca", "D$^0$ from D$^*$ - DCA  (cm)", 100, 0, 0.1)),
+                'Dstar_Kpt': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("kpt", "K from D$^*$ - p$_{T}$ [GeV/c]", 80, 0, 100)),
+                'Dstar_Kchindof': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("kchindof", "K from D$^*$  - reduced $\chi^2$", 60, 0, 10)),
+                'Dstar_KnValid': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("knvalid", "K from D$^*$ - tracker hits", 80, 0, 30)),
+                'Dstar_Kdxy': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("kdxy", "K from D$^*$ - dxy ", 60, 0, 5)),
+                'Dstar_Kdz': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("kdz", "K from D$^*$ - dz", 80, 0, 10)),
+                'Dstar_pispt': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("pispt", "$\pi_s$ from D$^*$ - p_{T}$ [GeV/c]", 60, 0, 30)),
+                'Dstar_pischindof': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("pischindof", "$\pi_s$ from D$^*$ - reduced $\chi^2$", 60, 0, 10)),
+                'Dstar_pisnValid': hist.Hist("Events", 
+                                        hist.Cat("chg", "charge"), 
+                                        hist.Bin("pisnValid", "$\pi_s$ from D$^*$ - tracker hits", 80, 0, 30)),
+                    
             }),
         })
 
@@ -250,6 +282,33 @@ class EventSelectorProcessor(processor.ProcessorABC):
         Dimu = ak.mask(Dimu, dimu_pt_cut)
         Muon = ak.mask(Muon, dimu_pt_cut)
 
+        ## Cut per MC sample
+        print(f"Your analyzer name is: {self.analyzer_name}")
+        if '9To30' in self.analyzer_name or '9to30' in self.analyzer_name:
+
+            print('MC sample: 9To30')
+            dimu_pt_cut = (Dimu.pt > 25) & (Dimu.pt < 30)
+            Dimu = ak.mask(Dimu, dimu_pt_cut)
+            Muon = ak.mask(Muon, dimu_pt_cut)
+
+        elif '30To50' in self.analyzer_name or '30to50' in self.analyzer_name:
+
+            print('MC sample: 30To50')
+            dimu_pt_cut = (Dimu.pt > 30) & (Dimu.pt < 50)
+            Dimu = ak.mask(Dimu, dimu_pt_cut)
+            Muon = ak.mask(Muon, dimu_pt_cut)
+
+        elif '50To100' in self.analyzer_name or '50to100' in self.analyzer_name:
+
+            print('MC sample: 50To100')
+            dimu_pt_cut = (Dimu.pt > 50) & (Dimu.pt < 100)
+            Dimu = ak.mask(Dimu, dimu_pt_cut)
+            Muon = ak.mask(Muon, dimu_pt_cut)
+
+        else:
+            print('You are not using a good dataset!!')
+
+
         # Dimuon rapidity
         dimu_rap_cut = (np.absolute(Dimu.rap) <= 1.2)
         Dimu = ak.mask(Dimu, dimu_rap_cut)
@@ -300,6 +359,8 @@ class EventSelectorProcessor(processor.ProcessorABC):
 
         Dstar['wrg_chg'] = (Dstar.Kchg == Dstar.pichg)
 
+        Dstar['D0dca'] = Dstar.D0dl * (1-Dstar.D0cosphi**2)**0.5
+
         ############### Dimu + OpenCharm associations
 
         DimuDstar = association(Dimu, Dstar)
@@ -316,8 +377,10 @@ class EventSelectorProcessor(processor.ProcessorABC):
         DimuDstar = DimuDstar[arg_sort]
         MuonDstar = MuonDstar[arg_sort]
 
+        cut_dstar = ak.num(DimuDstar)>0
+        DimuDstar = DimuDstar[cut_dstar]
+        MuonDstar = MuonDstar[cut_dstar]
         weight = get_weight(evaluator, MuonDstar.slot0, DimuDstar.slot1, PVtx)
-        DimuDstar = DimuDstar[ak.num(DimuDstar)>0]
          
         ############### Leading and Trailing muon separation Gen_particles
         leading_mu = (Muon.slot0.pt > Muon.slot1.pt)
@@ -360,6 +423,7 @@ class EventSelectorProcessor(processor.ProcessorABC):
         output["HLT"] = trigger_acc        
 
         # Accumulator for the associated candidates
+        # This accumulator is created in order to have access to build_p4 method, so we can create the invariant mass.
         DimuDstar_acc = processor.dict_accumulator({})
         DimuDstar_acc['Dimu'] = processor.dict_accumulator({})
         DimuDstar_acc['Dstar'] = processor.dict_accumulator({})
@@ -378,14 +442,98 @@ class EventSelectorProcessor(processor.ProcessorABC):
         for var in DimuDstar.slot1.fields:
             DimuDstar_acc['Dstar'][var] = processor.column_accumulator(ak.to_numpy(ak.flatten(DimuDstar.slot1[var])))
         DimuDstar_acc['nDimuDstar'] = processor.column_accumulator(ak.to_numpy(ak.num(DimuDstar)))
-        output['DimuDstar'] = DimuDstar_acc
+        
+
+        # Builds p4 vector to calculate variables
+        DimuDstar_p4 = build_p4(DimuDstar_acc)
+        # Reconstructs DimuDstar with desired variables
+        DimuDstar_vars = ak.zip({
+                'jpsi_mass' : DimuDstar_acc['Dimu']['mass'].value,
+                'jpsi_pt' : DimuDstar_acc['Dimu']['pt'].value,
+                'jpsi_eta' : DimuDstar_acc['Dimu']['eta'].value,
+                'jpsi_phi' : DimuDstar_acc['Dimu']['phi'].value,
+                'jpsi_rap' : DimuDstar_acc['Dimu']['rap'].value,
+                'jpsi_dl' : DimuDstar_acc['Dimu']['dl'].value,
+                'jpsi_dlErr' : DimuDstar_acc['Dimu']['dlErr'].value,
+                'jpsi_dlsig' : DimuDstar_acc['Dimu']['dlSig'].value,
+                'dstar_deltam' : DimuDstar_acc['Dstar']['deltam'].value,
+                'dstar_deltamr' : DimuDstar_acc['Dstar']['deltamr'].value,
+                'dstar_pt' : DimuDstar_acc['Dstar']['pt'].value,
+                'dstar_eta' : DimuDstar_acc['Dstar']['eta'].value,
+                'dstar_phi' : DimuDstar_acc['Dstar']['phi'].value,
+                'dstar_rap' : DimuDstar_acc['Dstar']['rap'].value,
+                'dstar_d0pt' : DimuDstar_acc['Dstar']['D0pt'].value,
+                'dstar_d0cosphi' : DimuDstar_acc['Dstar']['D0cosphi'].value,
+                'dstar_d0dl' : DimuDstar_acc['Dstar']['D0dl'].value,
+                'dstar_d0dlsig' : DimuDstar_acc['Dstar']['D0dlSig'].value,
+                'dstar_d0dca' : DimuDstar_acc['Dstar']['D0dl'].value * (1-(DimuDstar_acc['Dstar']['D0cosphi'].value)**2)**0.5,
+                'dstar_Kpt' : DimuDstar_acc['Dstar']['Kpt'].value,
+                'dstar_Kchindof' : DimuDstar_acc['Dstar']['Kchindof'].value,
+                'dstar_KnValid' : DimuDstar_acc['Dstar']['KnValid'].value,
+                'dstar_Kdxy' : DimuDstar_acc['Dstar']['Kdxy'].value,
+                'dstar_pidxy' : DimuDstar_acc['Dstar']['pidxy'].value,
+                'dstar_Kdz' : DimuDstar_acc['Dstar']['Kdz'].value,
+                'dstar_pispt' : DimuDstar_acc['Dstar']['pispt'].value,
+                'dstar_pischindof' : DimuDstar_acc['Dstar']['pischindof'].value,
+                'dstar_pisnValid' : DimuDstar_acc['Dstar']['pisnValid'].value,
+                'associationProb' : DimuDstar_acc['Dstar']['associationProb'].value,            
+                'dimu_dstar_deltarap' : abs(DimuDstar_acc['deltarap'].value),
+                'dimu_dstar_deltapt' : DimuDstar_acc['deltapt'].value,
+                'dimu_dstar_deltaeta' : DimuDstar_acc['deltaeta'].value,
+                'dimu_dstar_deltaphi' : DimuDstar_acc['deltaphi'].value,                
+                'dimu_dstar_mass' : DimuDstar_p4.mass, #is_jpsi & ~wrg_chg & dlSig & dlSig_D0Dstar
+                'dimu_dstar_pt' : DimuDstar_p4.pt, #is_jpsi & ~wrg_chg & dlSig & dlSig_D0Dstar
+                'is_jpsi' : DimuDstar_acc['Dimu']['is_jpsi'].value,
+                'wrg_chg': DimuDstar_acc['Dstar']['wrg_chg'].value,}, with_name='PtEtaPhiMCandidate')
+        # Unflatten it to take the first element
+        DimuDstar = ak.unflatten(DimuDstar_vars, DimuDstar_acc['nDimuDstar'].value)
+
+        # Saving new accumulator with JpsiDstar invariant mass
+        DimuDstar_acc = processor.dict_accumulator({})
+        DimuDstar_acc['Dimu'] = processor.dict_accumulator({})
+        DimuDstar_acc['Dstar'] = processor.dict_accumulator({})
+        for var in DimuDstar.fields:
+            if (var == '0') or (var =='1'):
+                continue
+            elif var == 'cand':
+                for i0 in DimuDstar[var].fields:
+                    DimuDstar_acc[i0] = processor.column_accumulator(ak.to_numpy(DimuDstar[var][i0][:,0]))
+            else:
+                DimuDstar_acc[var] = processor.column_accumulator(ak.to_numpy(DimuDstar[var][:,0]))
+
+        for var in DimuDstar.slot0.fields:
+            DimuDstar_acc['Dimu'][var] = processor.column_accumulator(ak.to_numpy(DimuDstar.slot0[var][:,0]))
+
+        for var in DimuDstar.slot1.fields:
+            DimuDstar_acc['Dstar'][var] = processor.column_accumulator(ak.to_numpy(DimuDstar.slot1[var][:,0]))
+        DimuDstar_acc['nDimuDstar'] = processor.column_accumulator(ak.to_numpy(DimuDstar[:,0]))
+        output['DimuDstar'] = DimuDstar_acc 
+
+        #DimuDstar = DimuDstar[DimuDstar.mass[:,0] > 8]
 
         ### Histograms 
 
         ## Associated Jpsi
-        #for i in DimuDstar.slot0.pt:
-        #    print(f'Dimu pT after: {i}')
-        output['JpsiDstar']['Jpsi_mass'].fill(mass=DimuDstar.slot0.mass[:,0], weight=weight)
+        output['JpsiDstar']['Jpsi_mass'].fill(mass=DimuDstar.jpsi_mass[:,0], weight=weight)
+        output['JpsiDstar']['Jpsi_p'].fill(pt=DimuDstar.jpsi_pt[:,0],
+                                        eta=DimuDstar.jpsi_eta[:,0],
+                                        phi=DimuDstar.jpsi_phi[:,0], weight=weight)
+        output['JpsiDstar']['Jpsi_rap'].fill(rap=DimuDstar.jpsi_rap[:,0], weight=weight)
+        output['JpsiDstar']['Jpsi_dlSig'].fill(dlSig=DimuDstar.jpsi_dlsig[:,0], weight=weight)
+        output['JpsiDstar']['Jpsi_dl'].fill(dl=DimuDstar.jpsi_dl[:,0], weight=weight)
+
+        ## Associated Dstar
+        output['JpsiDstar']['Dstar_deltamr'].fill(chg='right charge', deltamr=DimuDstar.dstar_deltamr[:,0], weight=weight)
+        output['JpsiDstar']['Dstar_p'].fill(chg='right charge',
+                                            pt=DimuDstar.dstar_pt[:,0],
+                                            eta=DimuDstar.dstar_eta[:,0],
+                                            phi=DimuDstar.dstar_phi[:,0], weight=weight)       
+        output['JpsiDstar']['Dstar_rap'].fill(chg='right charge', rap=DimuDstar.dstar_rap[:,0], weight=weight)
+        output['JpsiDstar']['Dstar_D0dl'].fill(chg='right charge', d0dl=DimuDstar.dstar_d0dl[:,0], weight=weight)
+        output['JpsiDstar']['Dstar_D0dlSig'].fill(chg='right charge', d0dlsig=DimuDstar.dstar_d0dlsig[:,0], weight=weight)
+        output['JpsiDstar']['Dstar_D0dca'].fill(chg='right charge', d0dca=DimuDstar.dstar_d0dca[:,0], weight=weight)
+        
+        """ output['JpsiDstar']['Jpsi_mass'].fill(mass=DimuDstar.slot0.mass[:,0], weight=weight)
         output['JpsiDstar']['Jpsi_p'].fill(pt=DimuDstar.slot0.pt[:,0],
                                         eta=DimuDstar.slot0.eta[:,0],
                                         phi=DimuDstar.slot0.phi[:,0], weight=weight)
@@ -402,29 +550,14 @@ class EventSelectorProcessor(processor.ProcessorABC):
         output['JpsiDstar']['Dstar_rap'].fill(chg='right charge', rap=DimuDstar.slot1.rap[:,0], weight=weight)
         output['JpsiDstar']['Dstar_D0dl'].fill(chg='right charge', d0dl=DimuDstar.slot1.D0dl[:,0], weight=weight)
         output['JpsiDstar']['Dstar_D0dlSig'].fill(chg='right charge', d0dlsig=DimuDstar.slot1.D0dlSig[:,0], weight=weight)
-        
+        output['JpsiDstar']['Dstar_D0dca'].fill(chg='right charge', d0dca=DimuDstar.slot1.D0dca[:,0], weight=weight) """
+
         ## JpsiDstar
-
-        # Builds p4 vector to calculate variables
-        DimuDstar_p4 = build_p4(DimuDstar_acc)
-        # Reconstructs DimuDstar with desired variables
-        DimuDstar_vars = ak.zip({  
-                        'jpsi_pt' : DimuDstar_acc['Dimu']['pt'].value,
-                        'mass' : DimuDstar_p4.mass,
-                        'pt' : DimuDstar_p4.pt,       
-                        'deltarap' : abs(DimuDstar_acc['deltarap'].value),
-                        'deltapt'  : DimuDstar_acc['deltapt'].value,  
-                        'deltaeta' : DimuDstar_acc['deltaeta'].value, 
-                        'deltaphi' : abs(DimuDstar_acc['deltaphi'].value),}, with_name='PtEtaPhiMCandidate')
-        # Unflatten it to take the first element
-        DimuDstar_vars = ak.unflatten(DimuDstar_vars, DimuDstar_acc['nDimuDstar'].value)
-
-        output['JpsiDstar']['JpsiDstar_mass'].fill(mass=DimuDstar_vars.mass[:,0], weight=weight)
-        output['JpsiDstar']['JpsiDstar_pt'].fill(pt=DimuDstar_vars.pt[:,0], weight=weight)
-        output['JpsiDstar']['JpsiDstar_deltarap'].fill(deltarap=DimuDstar.deltarap[:,0], weight=weight)
-        output['JpsiDstar']['JpsiDstar_deltaphi'].fill(deltaphi=DimuDstar.deltaphi[:,0], weight=weight)
-        output['JpsiDstar']['JpsiDstar_deltapt'].fill(deltapt=DimuDstar.deltapt[:,0], weight=weight)
-        output['JpsiDstar']['JpsiDstar_deltaeta'].fill(deltaeta=DimuDstar.deltaeta[:,0], weight=weight)
+        output['JpsiDstar']['JpsiDstar_mass'].fill(mass=DimuDstar.dimu_dstar_mass[:,0], weight=weight)
+        output['JpsiDstar']['JpsiDstar_deltarap'].fill(deltarap=DimuDstar.dimu_dstar_deltarap[:,0], weight=weight)
+        output['JpsiDstar']['JpsiDstar_deltaphi'].fill(deltaphi=DimuDstar.dimu_dstar_deltaphi[:,0], weight=weight)
+        output['JpsiDstar']['JpsiDstar_deltapt'].fill(deltapt=DimuDstar.dimu_dstar_deltapt[:,0], weight=weight)
+        #output['JpsiDstar']['JpsiDstar_deltaeta'].fill(deltaeta=DimuDstar.deltaeta[:,0], weight=weight)
 
         
         file_hash = str(random.getrandbits(128)) + str(len(events))
