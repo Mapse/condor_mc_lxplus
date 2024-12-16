@@ -308,7 +308,6 @@ class EventSelectorProcessor(processor.ProcessorABC):
         else:
             print('You are not using a good dataset!!')
 
-
         # Dimuon rapidity
         dimu_rap_cut = (np.absolute(Dimu.rap) <= 1.2)
         Dimu = ak.mask(Dimu, dimu_rap_cut)

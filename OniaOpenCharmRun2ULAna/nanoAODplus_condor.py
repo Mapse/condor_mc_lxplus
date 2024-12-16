@@ -5,10 +5,16 @@ import os, sys
 
 import coffea.processor as processor
 from coffea.nanoevents import BaseSchema
+import coffea
 
 from nanoAODplus_processor.EventSelectorProcessor import EventSelectorProcessor
 from tools.merger import merger
 from tools.plotter import plotter
+
+import uproot
+
+print(uproot.__version__)
+print(coffea.__version__)
 
 tstart = time.time()
 
