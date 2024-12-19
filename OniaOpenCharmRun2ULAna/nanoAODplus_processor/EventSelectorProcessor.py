@@ -134,7 +134,7 @@ class EventSelectorProcessor(processor.ProcessorABC):
                                         hist.Bin("d0dlsig", "D$^0$ from D$^*$ - Decay length significance", 120, 0, 50)),
                 'Dstar_D0dca': hist.Hist("Events", 
                                         hist.Cat("chg", "charge"), 
-                                        hist.Bin("d0dca", "D$^0$ from D$^*$ - DCA  (cm)", 100, 0, 0.1)),
+                                        hist.Bin("d0dca", "D$^0$ from D$^*$ - DCA  (cm)", 80, 0, 0.1)),
                 'Dstar_Kpt': hist.Hist("Events", 
                                         hist.Cat("chg", "charge"), 
                                         hist.Bin("kpt", "K from D$^*$ - p$_{T}$ [GeV/c]", 80, 0, 100)),
@@ -363,11 +363,20 @@ class EventSelectorProcessor(processor.ProcessorABC):
         ############### Dimu + OpenCharm associations
 
         DimuDstar = association(Dimu, Dstar)
+        # Invariant mass to avoid peak (first time applied on 7 October 2024)
+        DimuDstar_p4 = ak.zip({'x': DimuDstar.cand.x, 
+                               'y': DimuDstar.cand.y,
+                               'z': DimuDstar.cand.z,
+                               't': DimuDstar.cand.t}, with_name="LorentzVector")
+        DimuDstar['dimu_dstar_mass'] = DimuDstar_p4.mass
+        DimuDstar = DimuDstar[DimuDstar.dimu_dstar_mass > 18]
         DimuDstar = DimuDstar[DimuDstar.slot1.associationProb > 0.05]
-        DimuDstar = DimuDstar[ak.fill_none(DimuDstar.slot0.pt, -1) > -1]
+        DimuDstar = DimuDstar[ak.fill_none(DimuDstar.slot0.pt, -1) > -1]        
+        
 
         Dstar_cut = Dstar[Dstar.associationIdx > -1]
         MuonDstar = ak.zip({'0': Muon[Dstar_cut.associationIdx], '1': Dstar_cut})
+        #MuonDstar = MuonDstar[DimuDstar.dimu_dstar_mass > 18]
         MuonDstar = MuonDstar[MuonDstar.slot1.associationProb > 0.05]
         MuonDstar = MuonDstar[ak.fill_none(MuonDstar.slot0.slot0.pt, -1) > -1]
        
@@ -401,7 +410,7 @@ class EventSelectorProcessor(processor.ProcessorABC):
         output['PVtx'] = PVtx_acc
 
         ## Muon accumulator
-        muon_lead_acc = processor.dict_accumulator({})
+        '''muon_lead_acc = processor.dict_accumulator({})
         for var in Muon_lead.fields:
             muon_lead_acc[var] = processor.column_accumulator(ak.to_numpy(ak.flatten(Muon_lead[var])))
         muon_lead_acc["nMuon"] = processor.column_accumulator(ak.to_numpy(ak.num(Muon_lead)))
@@ -411,15 +420,15 @@ class EventSelectorProcessor(processor.ProcessorABC):
         for var in Muon_trail.fields:
             muon_trail_acc[var] = processor.column_accumulator(ak.to_numpy(ak.flatten(Muon_trail[var])))
         muon_trail_acc["nMuon"] = processor.column_accumulator(ak.to_numpy(ak.num(Muon_trail)))
-        output["Muon_trail"] = muon_trail_acc
+        output["Muon_trail"] = muon_trail_acc'''
 
         ## Trigger accumulator
 
         # Triggers
-        trigger_acc = processor.dict_accumulator({})
+        '''trigger_acc = processor.dict_accumulator({})
         for var in hlt_char.fields:
             trigger_acc[var] = processor.column_accumulator(ak.to_numpy(hlt_char[var]))
-        output["HLT"] = trigger_acc        
+        output["HLT"] = trigger_acc'''        
 
         # Accumulator for the associated candidates
         # This accumulator is created in order to have access to build_p4 method, so we can create the invariant mass.
@@ -508,8 +517,6 @@ class EventSelectorProcessor(processor.ProcessorABC):
         DimuDstar_acc['nDimuDstar'] = processor.column_accumulator(ak.to_numpy(DimuDstar[:,0]))
         output['DimuDstar'] = DimuDstar_acc 
 
-        #DimuDstar = DimuDstar[DimuDstar.mass[:,0] > 8]
-
         ### Histograms 
 
         ## Associated Jpsi
@@ -531,33 +538,12 @@ class EventSelectorProcessor(processor.ProcessorABC):
         output['JpsiDstar']['Dstar_D0dl'].fill(chg='right charge', d0dl=DimuDstar.dstar_d0dl[:,0], weight=weight)
         output['JpsiDstar']['Dstar_D0dlSig'].fill(chg='right charge', d0dlsig=DimuDstar.dstar_d0dlsig[:,0], weight=weight)
         output['JpsiDstar']['Dstar_D0dca'].fill(chg='right charge', d0dca=DimuDstar.dstar_d0dca[:,0], weight=weight)
-        
-        """ output['JpsiDstar']['Jpsi_mass'].fill(mass=DimuDstar.slot0.mass[:,0], weight=weight)
-        output['JpsiDstar']['Jpsi_p'].fill(pt=DimuDstar.slot0.pt[:,0],
-                                        eta=DimuDstar.slot0.eta[:,0],
-                                        phi=DimuDstar.slot0.phi[:,0], weight=weight)
-        output['JpsiDstar']['Jpsi_rap'].fill(rap=DimuDstar.slot0.rap[:,0], weight=weight)
-        output['JpsiDstar']['Jpsi_dlSig'].fill(dlSig=DimuDstar.slot0.dlSig[:,0], weight=weight)
-        output['JpsiDstar']['Jpsi_dl'].fill(dl=DimuDstar.slot0.dl[:,0], weight=weight)
-
-        ## Associated Dstar
-        output['JpsiDstar']['Dstar_deltamr'].fill(chg='right charge', deltamr=DimuDstar.slot1.deltamr[:,0], weight=weight)
-        output['JpsiDstar']['Dstar_p'].fill(chg='right charge',
-                                            pt=DimuDstar.slot1.pt[:,0],
-                                            eta=DimuDstar.slot1.eta[:,0],
-                                            phi=DimuDstar.slot1.phi[:,0], weight=weight)       
-        output['JpsiDstar']['Dstar_rap'].fill(chg='right charge', rap=DimuDstar.slot1.rap[:,0], weight=weight)
-        output['JpsiDstar']['Dstar_D0dl'].fill(chg='right charge', d0dl=DimuDstar.slot1.D0dl[:,0], weight=weight)
-        output['JpsiDstar']['Dstar_D0dlSig'].fill(chg='right charge', d0dlsig=DimuDstar.slot1.D0dlSig[:,0], weight=weight)
-        output['JpsiDstar']['Dstar_D0dca'].fill(chg='right charge', d0dca=DimuDstar.slot1.D0dca[:,0], weight=weight) """
 
         ## JpsiDstar
         output['JpsiDstar']['JpsiDstar_mass'].fill(mass=DimuDstar.dimu_dstar_mass[:,0], weight=weight)
         output['JpsiDstar']['JpsiDstar_deltarap'].fill(deltarap=DimuDstar.dimu_dstar_deltarap[:,0], weight=weight)
         output['JpsiDstar']['JpsiDstar_deltaphi'].fill(deltaphi=DimuDstar.dimu_dstar_deltaphi[:,0], weight=weight)
         output['JpsiDstar']['JpsiDstar_deltapt'].fill(deltapt=DimuDstar.dimu_dstar_deltapt[:,0], weight=weight)
-        #output['JpsiDstar']['JpsiDstar_deltaeta'].fill(deltaeta=DimuDstar.deltaeta[:,0], weight=weight)
-
         
         file_hash = str(random.getrandbits(128)) + str(len(events))
         save(output, "output/" + self.analyzer_name + "/" + self.analyzer_name + "_" + file_hash + ".coffea")
