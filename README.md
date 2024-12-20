@@ -1,63 +1,59 @@
-# condor_mc_lxplus
-This repository contains all codes to run the Monte Carlo analyis with condor on lxplus.
+# Processing nanoAODPlus files - SPS and DPS Monte Carlo
+This repository contains all codes to run the Monte Carlo analysis with condor on lxplus.
+The input files are in the nanoAODPlus format and are produced using this [repository](https://github.com/Mapse/NanoAOD). The output files
+are in the _.coffea_ format.
 
-# To run
+## Files used in the processing
 
-There are several codes that should be run separately. Below one can find the steps.
+* quick_setup.sh
+* get_files_xrootd.py
+* condor.py
+* jobs_template.jdl
+* submit.sh
 
-## Make path for the files
+The first thing to do here is to activate the conda enviroment with the files being used and use your grid credentials. These two things are
+performed using:
 
-First one should create the text file with the paths to the *NanoAODPlus.root* files.
+``` quick_setup.sh ```
 
-In order to do so, one need to run the script named *make_path.sh*.
+Now, you need to identify the path of your files. Using T2_Caltec_US as an example, the  basic command used for this is,
 
-There, one needs to provide the path (normally it is just a *pwd* command) where the *.txt* file should be produced. This should go on the variable *here*. Besides, one needs to provide the path where the *NanoAODPlus.root* files are. This should go on the variable *file_name*.
+``` xrdfs k8s-redir.ultralight.org:1094 ls -u /store/group/uerj/mabarros ```
 
-Note: It is important to consider how many 000x folders the MC production. For this version it is hardcoded: We consider from 0000/ to 0009/. Don't worry, you can simple change it or construct a better logic.
+However, the strategy can be found on the get_files_xrootd.py code, you will see four lists (after line 46). Using 2017-DPS-bbbar as an example:
 
-Finally, one can do:
+```
+mc = ['D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgen',
+          'D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgen',
+          'D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgen',]
+    
+dataset = ['D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
+           'D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
+           'D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',]
 
-    . make_path.sh
+crab_folder = ['241128_165410', '241128_165417', '241128_165423',]
+
+n_folders = [1, 1, 1,]
+```
+This will create three .txt files:
+
+```
+D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt
+D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt
+D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt
+```
+Before lunching the processing, it is important to guarantee that your _x509userproxy_ is at the right place. To guarantee this, edit the path on
+jobs_template.jdl file:
+
+``` x509userproxy = /afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/x509up_u128055 ```
+
 ## Run condor
 
-The second steps one need to run condor in order to produce *.coffea* files. First, activate *voms* certificate:
+Finally, one need to run condor in order to produce *.coffea* files. In this example, the files refers to D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt: 
 
-    voms-proxy-init -voms cms
-    
-Then, copy it to the current directory_
-
-    cp /tmp/x509up_u128055 .
-
-Now, the script *condor.py* can be run:
-
-    python3 condor.py -n=*name* -s
-
-Where *name* is the content of *file_name* without *_path.txt*
-
-Example:
-
-> If *file_name* is *Monte_Carlo_path.txt* then *name* should be Monte_Carlo:
-
-    python3 condor.py -n=*Monte_Carlo* -s
+```    python3 condor.py -n=D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s ```
 
 After that, condor should run normally
 
 > Comment: It is important follow the condor process by typing *condor_q user_name* and also look on the *output.err* files.
 
-## Merge data and make histograms
-
-In this step the files produced in the last step are going to be merged and moved to *OniaOpenCharmRun2ULAna* folder to produce the histogram files
-
-The code that do that is *merged.sh*. There, one should provide the name of the folder where all files (coffea data and coffea histogram) are going to be moved. Remember that this folder is located at OniaOpenCharmRun2ULAna/output. The name of the folder is stored on the variable *name*.
-
-> Comment: Be aware, always use the same processors version (histogram and event selection) in both cases, condor and  OniaOpenCharmRun2ULAna.
-
-Finnaly, run the code:
-
-    . merge.sh
-    
-If everthing went well, you should have your .coffea and hists.coffea on the folder OniaOpenCharmRun2ULAna/output/*name*
-
-
-
-    
