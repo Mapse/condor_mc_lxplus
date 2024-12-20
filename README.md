@@ -10,6 +10,7 @@ are in the _.coffea_ format.
 * condor.py
 * jobs_template.jdl
 * submit.sh
+* config_files.py
 
 The first thing to do here is to activate the conda enviroment with the files being used and use your grid credentials. These two things are
 performed using:
@@ -49,6 +50,7 @@ jobs_template.jdl file:
 
 ## Run condor
 
+Before running the condor script, it is important to choose the dataset (2016preVFP, 2016postVFP, 2017, 2018). Go to OniaOpenCharmRun2ULAna/config/config_files.py and edit the variable _year_ to chosse your dataset.
 Finally, one need to run condor in order to produce *.coffea* files. In this example, the files refers to D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt: 
 
 ```    python3 condor.py -n=D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s ```
