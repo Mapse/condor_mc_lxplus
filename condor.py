@@ -15,11 +15,13 @@ condor_jobcodes = {
     "013": "released"
 }
 
-def job_divider(name, n_files=20):
+def job_divider(name, n_files=20): #n_files=20 for normal situations
     os.system("mkdir -p " + name + "_jobs")
     os.system("rm -rf " + name + "jobs/*")
 
     file_list = open(name + "_path.txt").readlines()
+
+    print(f'Number of files to process: {len(file_list)}')
 
     chunks = [file_list[x:x+n_files] for x in range(0, len(file_list), n_files)]
 
@@ -97,7 +99,7 @@ def submit(name):
             json.dump(config, outfile)
 
     else:
-        print(f'You are running files from {year} in another dataset!!. \nEither go to config_files.py to change the correct year or run the correct year!')
+        print(f'You are running files from {year} in another dataset!!. \nEither go to config_files.py to change the correct year, or run the correct year! \nImportant: check if the .txt name contains 20UL in its composition, ')
 
 def check(name):
     with open(name + "_config/config.json") as config_file:

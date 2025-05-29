@@ -1,5 +1,6 @@
 # coding: utf-8
 
+import re
 import time
 import os, sys
 
@@ -26,12 +27,24 @@ with open(job) as f:
 #print('file list:')
 print(f'file list: {file_list[0]}')
 
+# Takes the input name for file name
+input_name = file_list[0]
+
+# Extract the part after the last "/"
+input_str = input_name.split("/")[-1] # Ex:SPS_JpsiDStar_JMM_DStarToD0Pi_D0ToKpi_JPsiPt-50To100_TuneCP5_13TeV-helaconia-pythia8-evtgenRunIISummer20UL17RECO_21.root
+# Regular expression to match up to 'XtoY' or 'XToY' between numbers
+pattern = r"^(.*?[\d]+[Tt]o[\d]+)"
+match = re.search(pattern, input_str)
+
+# Extract the matched portion
+name = match.group(1) if match else None
+
 #name = file_list[0].split('/')[-1].split('_')[0] # before
 
 # Takes the output file name 
-name =  file_list[0].split('/')[-1].split('_')[0] +  file_list[0].split('/')[-1].split('_')[1] +  file_list[0].split('/')[-1].split('_')[2]
-
+#name =  file_list[0].split('/')[-1].split('_')[0] +  file_list[0].split('/')[-1].split('_')[1] +  file_list[0].split('/')[-1].split('_')[2]
 print(name)
+
 name = name + '_' + number
 
 files = {name: file_list}

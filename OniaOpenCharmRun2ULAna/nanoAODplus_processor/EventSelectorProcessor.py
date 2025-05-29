@@ -26,6 +26,7 @@ reco_file = config.reco_file
 id_file = config.id_file
 
 def get_weight(evaluator, Muon, Dimu, PVtx):
+    
     pileup_weight = evaluator['weight_histogram'](ak.num(PVtx))[ak.num(Dimu)>0]
     muon = Muon[ak.num(Dimu)>0]
     #dimu = Dimu[ak.num(Dimu)>0]
@@ -93,6 +94,7 @@ class EventSelectorProcessor(processor.ProcessorABC):
 
         self._accumulator = processor.dict_accumulator({
             'cutflow': processor.defaultdict_accumulator(int),
+            'nevents': processor.value_accumulator(int),
             'JpsiDstar': processor.dict_accumulator({
                 'Jpsi_mass': hist.Hist("Events", hist.Bin("mass", "$M_{\mu^+\mu^-}$ [GeV/$c^2$]", 100, 2.95, 3.25)), 
                 'Jpsi_p': hist.Hist("Events", 
@@ -175,6 +177,9 @@ class EventSelectorProcessor(processor.ProcessorABC):
         # test if there is any events in the file
         if len(events) == 0:
             return output
+        
+        # Saves the number of events
+        output['nevents'].add(len(events))
 
         ############### Get the primary vertices  ############### 
         PVtx = ak.zip({**get_vars_dict(events, primary_vertex_aod_cols)})
@@ -334,8 +339,6 @@ class EventSelectorProcessor(processor.ProcessorABC):
 
         Dstar = Dstar[(Dstar.KnValid > 4) & (Dstar.pinValid > 4) & (Dstar.KnPix > 1) & (Dstar.pinPix > 1)]
 
-        Dstar = Dstar[(Dstar.Kdxy < 0.5) & (Dstar.pidxy < 0.5)]
-
         K_theta = 2 * np.arctan(np.exp(-Dstar.Keta))
         pi_theta = 2 * np.arctan(np.exp(-Dstar.pieta))
         Dstar = Dstar[(Dstar.Kdz < 0.5/np.sin(K_theta)) & (Dstar.pidz < 0.5/np.sin(pi_theta))]
@@ -369,7 +372,7 @@ class EventSelectorProcessor(processor.ProcessorABC):
                                'z': DimuDstar.cand.z,
                                't': DimuDstar.cand.t}, with_name="LorentzVector")
         DimuDstar['dimu_dstar_mass'] = DimuDstar_p4.mass
-        DimuDstar = DimuDstar[DimuDstar.dimu_dstar_mass > 18]
+        #DimuDstar = DimuDstar[DimuDstar.dimu_dstar_mass > 18]
         DimuDstar = DimuDstar[DimuDstar.slot1.associationProb > 0.05]
         DimuDstar = DimuDstar[ak.fill_none(DimuDstar.slot0.pt, -1) > -1]        
         
@@ -382,7 +385,8 @@ class EventSelectorProcessor(processor.ProcessorABC):
        
         # Takes the candidate with highest pT
         arg_sort = ak.argsort(DimuDstar['cand'].pt, axis=1, ascending=False)
-        DimuDstar = DimuDstar[arg_sort]
+        DimuDstar = DimuDstar[arg_sort] # hint: if I get 'ValueError: only arrays of integers or booleans may be used as a slice', it is because the array is empty
+        # Fast solution for this problem: run more jobs so the problematic file will be present in a short amount of events
         MuonDstar = MuonDstar[arg_sort]
 
         cut_dstar = ak.num(DimuDstar)>0

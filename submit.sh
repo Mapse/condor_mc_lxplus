@@ -48,6 +48,8 @@ pip3 install uncertainties==3.1.6
 pip3 install awkward==1.7.0  #2.4.6     #1.7.0
 pip3 install numpy==1.22.4
 
+export XRD_TIMEOUT=60
+
 echo "Done"
 echo "---------------Starting the processing---------------"
 
