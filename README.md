@@ -21,22 +21,39 @@ Now, you need to identify the path of your files. Using T2_Caltec_US as an examp
 
 ``` xrdfs k8s-redir.ultralight.org:1094 ls -u /store/group/uerj/mabarros ```
 
-However, the strategy can be found on the get_files_xrootd.py code, you will see four lists (after line 46). Using 2017-DPS-bbbar as an example:
+This is implemented in the get_files_xrood.py script. To run it, just do:
+
+``` python3 get_files_xrootd.py ```
+
+Then, you just need to pick up the sample you want to obtain the txt file for condor (the options you see below will be available when you run the get_files_xrootd.py ):
 
 ```
-mc = ['D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgen',
-          'D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgen',
-          'D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgen',]
-    
-dataset = ['D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
-           'D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
-           'D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',]
-
-crab_folder = ['241128_165410', '241128_165417', '241128_165423',]
-
-n_folders = [1, 1, 1,]
+1: 2016-pre-VFP-DPS-ccbar
+2: 2016-pre-VFP-DPS-bbbar
+3: 2016-pre-VFP-SPS-3FS-4FS-ccbar
+4: 2016-pre-VFP-SPS-VFNS-ccbar
+5: 2016-pre-VFP-SPS-3FS-4FS-bbbar
+6: 2016-pre-VFP-SPS-VFNS-bbbar
+7: 2016-pos-VFP-DPS-ccbar
+8: 2016-pos-VFP-DPS-bbbar
+9: 2016-pos-VFP-SPS-3FS-4FS-ccbar
+10: 2016-pos-VFP-SPS-VFNS-ccbar
+11: 2016-pos-VFP-SPS-3FS-4FS-bbbar
+12: 2016-pos-VFP-SPS-VFNS-bbbar
+13: 2017-DPS-ccbar
+14: 2017-DPS-bbbar
+15: 2017-SPS-3FS-4FS-ccbar
+16: 2017-SPS-VFNS-ccbar
+17: 2017-SPS-3FS-4FS-bbbar
+18: 2017-SPS-VFNS-bbbar
+19: 2018-DPS-ccbar
+20: 2018-DPS-bbbar
+21: 2018-SPS-3FS-4FS-ccbar
+22: 2018-SPS-VFNS-ccbar
+23: 2018-SPS-3FS-4FS-bbbar
+24: 2018-SPS-VFNS-bbbar
 ```
-This will create three .txt files:
+For instance, if you type '14' you will create three .txt files:
 
 ```
 D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt
@@ -50,7 +67,7 @@ jobs_template.jdl file:
 
 ## Run condor
 
-Before running the condor script, it is important to choose the dataset (2016preVFP, 2016postVFP, 2017, 2018). Go to OniaOpenCharmRun2ULAna/config/config_files.py and edit the variable _year_ to chosse your dataset.
+Before running the condor script, it is important to choose the dataset (2016APV, 2016, 2017, 2018). Go to OniaOpenCharmRun2ULAna/config/config_files.py and edit the variable _year_ to choose your dataset.
 Finally, one need to run condor in order to produce *.coffea* files. In this example, the files refers to D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt: 
 
 ```    python3 condor.py -n=D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s ```
@@ -59,3 +76,4 @@ After that, condor should run normally
 
 > Comment: It is important follow the condor process by typing *condor_q user_name* and also look on the *output.err* files.
 
+Finally, when your files are ready, you just need to seed then to another repository where the other steps of the anaylsis can be performed.
