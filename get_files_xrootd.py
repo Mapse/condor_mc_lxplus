@@ -11,13 +11,21 @@ def natural_keys(text):
     '''
     return [ atoi(c) for c in re.split(r'(\d+)', text) ]
 
-def generate_path(mc, dataset,  crab_folder, n_folders, active_config):
+def generate_path(mc, dataset,  crab_folder, n_folders, active_config, file_location):
 
-    cmds = [ 
-    f'xrdfs k8s-redir.ultralight.org:1094 ls -u /store/group/uerj/mabarros/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
-    ]
-    print("Command used to get the paths: \n")
-    print(cmds)
+    if file_location == 'Caltech':
+        cmds = [ 
+        f'xrdfs k8s-redir.ultralight.org:1094 ls -u /store/group/uerj/mabarros/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
+        ]
+        print("Command used to get the paths: \n")
+        print(cmds)
+    elif file_location == 'CERNBOX':
+        cmds = [ 
+        f'xrdfs eosuser.cern.ch ls -u /eos/user/s/sfonseca/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
+        ]
+        print("Command used to get the paths: \n")
+        print(cmds)
+        
 
     cat = ""
     out_file = dataset + "_path.txt"
@@ -53,31 +61,36 @@ def generate_path(mc, dataset,  crab_folder, n_folders, active_config):
 
 if __name__ == '__main__':
     
+    fil_loc = {1: 'Caltech', 2: 'CERNBOX'}
+
     configurations = {
     1: "2016-pre-VFP-DPS-ccbar",
-    2: "2016-pre-VFP-DPS-bbbar",
-    3: "2016-pre-VFP-SPS-3FS-4FS-ccbar",
+    2: "2016-pre-VFP-DPS-bbbar",    
+    3: "2016-pos-VFP-DPS-ccbar",
+    4: "2016-pos-VFP-DPS-bbbar",
+    5: "2017-DPS-ccbar",
+    6: "2017-SPS-3FS-ccbar",
+    7: "2017-SPS-3FS-bbbar",
+    8: "2017-DPS-bbbar",
+    9: "2018-DPS-ccbar",
+    10: "2018-DPS-bbbar",}  
+
+    """ 3: "2016-pre-VFP-SPS-3FS-4FS-ccbar",
     4: "2016-pre-VFP-SPS-VFNS-ccbar",
     5: "2016-pre-VFP-SPS-3FS-4FS-bbbar",
     6: "2016-pre-VFP-SPS-VFNS-bbbar",
-    7: "2016-pos-VFP-DPS-ccbar",
-    8: "2016-pos-VFP-DPS-bbbar",
     9: "2016-pos-VFP-SPS-3FS-4FS-ccbar",
     10: "2016-pos-VFP-SPS-VFNS-ccbar",
     11: "2016-pos-VFP-SPS-3FS-4FS-bbbar",
     12: "2016-pos-VFP-SPS-VFNS-bbbar",
-    13: "2017-DPS-ccbar",
-    14: "2017-DPS-bbbar",
     15: "2017-SPS-3FS-4FS-ccbar",
     16: "2017-SPS-VFNS-ccbar",
     17: "2017-SPS-3FS-4FS-bbbar",
     18: "2017-SPS-VFNS-bbbar",
-    19: "2018-DPS-ccbar",
-    20: "2018-DPS-bbbar",
     21: "2018-SPS-3FS-4FS-ccbar",
     22: "2018-SPS-VFNS-ccbar",
     23: "2018-SPS-3FS-4FS-bbbar",
-    24: "2018-SPS-VFNS-bbbar"}  
+    24: "2018-SPS-VFNS-bbbar" """
 
     config_data = {
         
@@ -276,9 +289,19 @@ if __name__ == '__main__':
             'D0ToKPi_Jpsi9to30_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
             'D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
             'D0ToKPi_Jpsi50to100_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
-        ],
+        ],  
         "crab_folder": ['241128_165410', '241128_165417', '241128_165423'],
         "n_folders": [1, 1, 1],},
+
+        "2017-SPS-3FS-ccbar": {
+        "mc": [
+            'LHE_SPS',
+        ],
+        "dataset": [
+            'jpsi_ccbar_25to100_3FS_SPS_2017_nanoaodplus',
+        ],
+        "crab_folder": [''],
+        "n_folders": [7],},
 
         "2017-SPS-3FS-4FS-ccbar": {
         "mc": [
@@ -448,12 +471,30 @@ if __name__ == '__main__':
       active_config = configurations[selected_number]
       print(f"You selected: {active_config}")    
     
+    # Display available file locations with numbers
+    print("Available file locations:")
+    for number, fil in fil_loc.items():
+        print(f"{number}: {fil}")
+
+    # Prompt the user to select file location by number
+    try:
+        selected_file_location = int(input("\nEnter the number of the desired configuration from the list above: ").strip())
+        if selected_file_location not in fil_loc:
+            raise ValueError("Invalid location")
+    except ValueError as e:
+        print(f"Error: {e}. Please enter a valid number from the list.")
+    else:
+        # Get the configuration name from the selected number
+        active_file_list = fil_loc[selected_file_location]
+        print(f"You selected: {active_file_list}")  
+
+    
     #active_config = "2017-SPS-ccbar-VFNS"
     # Extract the active configuration
     config = config_data[active_config]
     # Use the active configuration in the function
     for m, d, c, n in zip(config["mc"], config["dataset"], config["crab_folder"], config["n_folders"]):
-      generate_path(m, d, c, n, active_config)     
+      generate_path(m, d, c, n, active_config, active_file_list)     
 
 
 ############################# Important
