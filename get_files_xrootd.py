@@ -293,6 +293,7 @@ if __name__ == '__main__':
         "crab_folder": ['241128_165410', '241128_165417', '241128_165423'],
         "n_folders": [1, 1, 1],},
 
+        ########## 2017-SPS-3FS-ccbar
         "2017-SPS-3FS-ccbar": {
         "mc": [
             'LHE_SPS',
@@ -302,6 +303,17 @@ if __name__ == '__main__':
         ],
         "crab_folder": [''],
         "n_folders": [7],},
+
+        ########## 2017-SPS-3FS-bbbar
+        "2017-SPS-3FS-bbbar": {
+        "mc": [
+            'LHE_SPS',
+        ],
+        "dataset": [
+            'jpsi_bbbar_25to100_3FS_SPS_2017_nanoaodplus',
+        ],
+        "crab_folder": [''],
+        "n_folders": [6],},
 
         "2017-SPS-3FS-4FS-ccbar": {
         "mc": [
