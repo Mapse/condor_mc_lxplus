@@ -49,6 +49,18 @@ pip3 install awkward==1.7.0  #2.4.6     #1.7.0
 pip3 install numpy==1.22.4
 
 export XRD_TIMEOUT=60
+export XRD_REQUESTTIMEOUT=120
+export XRD_CONNECTIONWINDOW=60
+export XRD_STREAMTIMEOUT=120
+
+echo "result of curl ifconfig.me"
+curl ifconfig.me
+echo "result of curl -4 ifconfig.me and curl -6 ifconfig.me"
+curl -4 ifconfig.me
+curl -6 ifconfig.me
+echo "nc command output:"
+nc -zv 198.32.43.99 1094
+nc -zv 2605:d9c0:6:2003::1:12 1094
 
 echo "Done"
 echo "---------------Starting the processing---------------"

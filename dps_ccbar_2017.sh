@@ -1,5 +1,5 @@
-python3 condor.py -n DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s #552
+python3 condor.py -n JpsiPt9To30ToMuMuDstarToD0pi_2017_20UL17 -s #552
 
-python3 condor.py -n DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s #126
+python3 condor.py -n JpsiPt30To50ToMuMuDstarToD0pi_2017_20UL17 -s #126
 
-python3 condor.py -n DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s #27
+python3 condor.py -n JpsiPt50To100ToMuMuDstarToD0pi_2017_20UL17 -s #27

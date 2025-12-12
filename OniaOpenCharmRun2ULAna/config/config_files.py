@@ -1,6 +1,6 @@
 
 # Dataset (possibilities: 2016APV, 2016, 2017, 2018)
-year = '2016APV'
+year = '2017'
 
 # Pileup reweight file
 #pileup_file = '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/analysis_monte_carlo/efficiencies_new/OniaOpenCharmRun2ULAna/data/corrections/pile_up_reweight_' + year + '.root'

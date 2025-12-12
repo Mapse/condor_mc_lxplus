@@ -25,7 +25,8 @@ if (args.select or args.analyze):
 
     tstart = time.time()
 
-    files = {'MuOniatestAOD': filesets['MuOniatestAOD']}
+    files = {'DPS_D0ToKPi_JPsiPt-9To30': filesets['DPS_D0ToKPi_JPsiPt-9To30testAOD'][:10]}
+
 
     # creating necessary folders into dir output data
     os.system("mkdir -p output/" + args.name)

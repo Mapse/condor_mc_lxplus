@@ -60,8 +60,23 @@ output = processor.run_uproot_job(files,
                                 processor_instance=EventSelectorProcessor(name),
                                 executor=processor.iterative_executor,
                                 executor_args={'schema': BaseSchema, 'skipbadfiles': True},
-                                chunksize=10000,
+                                chunksize=5000,
                                 )
+
+""" output = processor.run_uproot_job(
+    files,
+    treename='Events',
+    processor_instance=EventSelectorProcessor(name),
+    executor=processor.futures_executor,
+    executor_args={
+        'schema': BaseSchema,
+        'skipbadfiles': True,
+        'workers': 4,
+        'timeout': 180  # timeout in seconds,
+        'retries': 5,
+    },
+    chunksize=10000,
+) """
 
 elapsed = round(time.time() - tstart, 2)
 print(f"Process finished in: {elapsed} s")

@@ -58,8 +58,8 @@ local_test:
       - data/path/local_test/Charmonium_path.txt 
 
 MC:
-  - primary_dataset: "UpsilonToMuMu"
+  - primary_dataset: "DPS_D0ToKPi_JPsiPt-9To30"
     datatier: "AOD"
     year: "test"
     path:
-    - data/path/MC/UpsilonToMuMu_path.txt
+    - data/path/MC/DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt

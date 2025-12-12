@@ -59,7 +59,7 @@ subpaths = {
 
 # Create subdirectories if they do not exist
 for subpath in subpaths.values():
-    os.makedirs(os.path.join(main_path, subpath), exist_ok=True)
+    os.makedirs(os.path.join(main_path, subpath, 'merged_data'), exist_ok=True)
 
 # Function to generate file names based on pattern
 """ def generate_files(prefix, range_end):

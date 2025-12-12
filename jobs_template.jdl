@@ -15,8 +15,7 @@ periodic_release = (JobStatus == 5) && ((HoldReasonCode == 0) || ((HoldReasonCod
 x509userproxy = /afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/x509up_u128055
 use_x509userproxy = true
 
-+JobFlavour = "workday"
++JobFlavour = "longlunch"
 +JobBatchName = "BATCH_NAME"
-
 
 queue arguments from FILE_LIST

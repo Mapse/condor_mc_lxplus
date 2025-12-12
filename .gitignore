@@ -1,12 +1,22 @@
-x509up*
+*x509up*
+.bashrc
+.condarc
+x509up_u128055
+crab.log
 *.pyc
 *.txt
 *.root
 *.coffea
 *.old_paths/
 modified:   x509up_u128055
-DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO_config/
-DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL18RECO_logs/
+*_config/
+*_logs/
 Miniconda3-latest-Linux-x86_64.sh
 OniaOpenCharmRun2ULAna/nanoAODplus_processor/.ipynb_checkpoints/
-
+dps_2017.sh
+dps_2018.sh
+mabarros.cc
+sps_2017.sh
+sps_vfns_2017.sh
+.gitignore
+x509up_u128055

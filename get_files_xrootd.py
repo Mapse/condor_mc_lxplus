@@ -21,7 +21,8 @@ def generate_path(mc, dataset,  crab_folder, n_folders, active_config, file_loca
         print(cmds)
     elif file_location == 'CERNBOX':
         cmds = [ 
-        f'xrdfs eosuser.cern.ch ls -u /eos/user/s/sfonseca/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
+        #f'xrdfs eosuser.cern.ch ls -u /eos/user/s/sfonseca/{mc}/{dataset}/{crab_folder}/{i:04}/' for i in range(n_folders)
+        f'xrdfs eosuser.cern.ch ls -u /eos/user/m/mabarros/Monte_Carlo/dps_official/{mc}/{dataset}/{crab_folder}' for i in range(n_folders)
         ]
         print("Command used to get the paths: \n")
         print(cmds)
@@ -266,18 +267,20 @@ if __name__ == '__main__':
        
         ################ 2017
         "2017-DPS-ccbar": {
+        
+
         "mc": [
-            'DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
-            'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
-            'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgen',
+            'ccbar',
+            'ccbar',
+            'ccbar',
         ],
         "dataset": [
-            'DPS_D0ToKPi_JPsiPt-9To30_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
-            'DPS_D0ToKPi_JPsiPt-30To50_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
-            'DPS_D0ToKPi_JPsiPt-50To100_JPsiFilter_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO',
+            'JpsiPt9To30ToMuMuDstarToD0pi_2017',
+            'JpsiPt30To50ToMuMuDstarToD0pi_2017',
+            'JpsiPt50To100ToMuMuDstarToD0pi_2017',
         ],
-        "crab_folder": ['230124_161004', '230124_161011', '220823_050416'],
-        "n_folders": [2, 1, 1],},
+        "crab_folder": ['', '', ''],
+        "n_folders": [1, 1, 1],},
 
         "2017-DPS-bbbar": {
         "mc": [
@@ -505,6 +508,7 @@ if __name__ == '__main__':
     # Extract the active configuration
     config = config_data[active_config]
     # Use the active configuration in the function
+    print(config)
     for m, d, c, n in zip(config["mc"], config["dataset"], config["crab_folder"], config["n_folders"]):
       generate_path(m, d, c, n, active_config, active_file_list)     
 

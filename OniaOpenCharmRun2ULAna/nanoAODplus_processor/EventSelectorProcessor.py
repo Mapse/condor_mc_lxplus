@@ -210,7 +210,20 @@ class EventSelectorProcessor(processor.ProcessorABC):
         elif config.year == '2017':
             hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2017)})
         elif config.year == '2018':
-            hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2018)})        
+            hlt_char = ak.zip({**get_vars_dict(events, hlt_cols_charm_2018)})       
+
+        ext_normalization = extractor()
+        ext_normalization.add_weight_sets(["weight_histogram weight_histogram " + pileup_file])
+        ext_normalization.add_weight_sets(['Reco_ * ' + reco_file])
+        ext_normalization.add_weight_sets(['Id_ * ' + id_file])
+        ext_normalization.finalize()
+        evaluator_normalization = ext_normalization.make_evaluator()
+
+        ############### Get the Muons from Dimu, for cuts in their params
+        Muon_normalization = ak.zip({'0': Muon[Dimu.t1muIdx], '1': Muon[Dimu.t2muIdx]})
+
+        weight_normalization = get_weight(evaluator_normalization, Muon_normalization, Dimu, PVtx)
+
 
         ##### Vertices cut
         #good_pvtx = Primary_vertex['isGood']
@@ -400,6 +413,11 @@ class EventSelectorProcessor(processor.ProcessorABC):
         Muon_trail = ak.where(~leading_mu, Muon.slot0, Muon.slot1)
 
         ############### Create the accumulators to save output
+
+        ## Weights - test accumulator
+        weight_normalization_acc = processor.dict_accumulator({})
+        weight_normalization_acc = processor.column_accumulator(ak.to_numpy(weight_normalization))
+        output['weight_normalization'] = weight_normalization_acc
 
         ## Weights accumulator
         weight_acc = processor.dict_accumulator({})
