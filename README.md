@@ -39,6 +39,9 @@ Then, you just need to pick up the sample you want to obtain the txt file for co
 9: 2018-DPS-ccbar
 10: 2018-DPS-bbbar
 ```
+PS: make sure you are using the correct path! In lies 18-19 and 24-25 of get_files_xrootd.py you will find the xrdfs command that takes uses the eos or caltech path.
+For instance, some files are in /eos/user/s/sfonseca/, others are /eos/user/m/mabarros, etc.
+
 For instance, if you type '14' you will create three .txt files:
 
 ```
