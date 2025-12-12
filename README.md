@@ -29,29 +29,15 @@ Then, you just need to pick up the sample you want to obtain the txt file for co
 
 ```
 1: 2016-pre-VFP-DPS-ccbar
-2: 2016-pre-VFP-DPS-bbbar
-3: 2016-pre-VFP-SPS-3FS-4FS-ccbar
-4: 2016-pre-VFP-SPS-VFNS-ccbar
-5: 2016-pre-VFP-SPS-3FS-4FS-bbbar
-6: 2016-pre-VFP-SPS-VFNS-bbbar
-7: 2016-pos-VFP-DPS-ccbar
-8: 2016-pos-VFP-DPS-bbbar
-9: 2016-pos-VFP-SPS-3FS-4FS-ccbar
-10: 2016-pos-VFP-SPS-VFNS-ccbar
-11: 2016-pos-VFP-SPS-3FS-4FS-bbbar
-12: 2016-pos-VFP-SPS-VFNS-bbbar
-13: 2017-DPS-ccbar
-14: 2017-DPS-bbbar
-15: 2017-SPS-3FS-4FS-ccbar
-16: 2017-SPS-VFNS-ccbar
-17: 2017-SPS-3FS-4FS-bbbar
-18: 2017-SPS-VFNS-bbbar
-19: 2018-DPS-ccbar
-20: 2018-DPS-bbbar
-21: 2018-SPS-3FS-4FS-ccbar
-22: 2018-SPS-VFNS-ccbar
-23: 2018-SPS-3FS-4FS-bbbar
-24: 2018-SPS-VFNS-bbbar
+2: 2016-pre-VFP-DPS-bbbar    
+3: 2016-pos-VFP-DPS-ccbar
+4: 2016-pos-VFP-DPS-bbbar
+5: 2017-DPS-ccbar
+6: 2017-SPS-3FS-ccbar
+7: 2017-SPS-3FS-bbbar
+8: 2017-DPS-bbbar
+9: 2018-DPS-ccbar
+10: 2018-DPS-bbbar
 ```
 For instance, if you type '14' you will create three .txt files:
 
