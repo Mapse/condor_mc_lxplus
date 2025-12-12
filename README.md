@@ -57,6 +57,11 @@ jobs_template.jdl file:
 ## Run condor
 
 Before running the condor script, it is important to choose the dataset (2016APV, 2016, 2017, 2018). Go to OniaOpenCharmRun2ULAna/config/config_files.py and edit the variable _year_ to choose your dataset.
+
+Now, go to OniaOpenCharmRun2ULAna/nanoAODplus_processor/EventSelectorProcessor.py and point the correct path for the config file. Just change line 18:
+
+```sys.path.insert(1, '/afs/cern.ch/work/m/mabarros/public/CMSSW_10_6_12/src/condor/condor_mc_lxplus/OniaOpenCharmRun2ULAna/config')```
+
 Finally, one need to run condor in order to produce *.coffea* files. In this example, the files refers to D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO_path.txt: 
 
 ```    python3 condor.py -n=D0ToKPi_Jpsi30to50_HardQCD_TuneCP5_13TeV-pythia8-evtgenRunIISummer20UL17RECO -s ```
